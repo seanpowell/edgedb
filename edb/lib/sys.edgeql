@@ -165,6 +165,7 @@ sys::get_version_as_str() -> std::str
 CREATE FUNCTION
 sys::get_transaction_isolation() -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
         SELECT setting FROM pg_settings WHERE name = 'transaction_isolation'
     $$;

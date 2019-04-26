@@ -28,50 +28,70 @@ std::uuid_generate_v1mc() -> std::uuid
 
 
 CREATE INFIX OPERATOR
-std::`=` (l: std::uuid, r: std::uuid) -> std::bool
+std::`=` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR r'=';
+};
 
 
 CREATE INFIX OPERATOR
-std::`?=` (l: OPTIONAL std::uuid, r: OPTIONAL std::uuid) -> std::bool
+std::`?=` (l: OPTIONAL std::uuid, r: OPTIONAL std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL EXPRESSION;
+};
 
 
 CREATE INFIX OPERATOR
-std::`!=` (l: std::uuid, r: std::uuid) -> std::bool
+std::`!=` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR r'<>';
+};
 
 
 CREATE INFIX OPERATOR
-std::`?!=` (l: OPTIONAL std::uuid, r: OPTIONAL std::uuid) -> std::bool
+std::`?!=` (l: OPTIONAL std::uuid, r: OPTIONAL std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL EXPRESSION;
+};
 
 
 CREATE INFIX OPERATOR
-std::`>=` (l: std::uuid, r: std::uuid) -> std::bool
+std::`>=` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR '>=';
+};
 
 
 CREATE INFIX OPERATOR
-std::`>` (l: std::uuid, r: std::uuid) -> std::bool
+std::`>` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR '>';
+};
 
 
 CREATE INFIX OPERATOR
-std::`<=` (l: std::uuid, r: std::uuid) -> std::bool
+std::`<=` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR '<=';
+};
 
 
 CREATE INFIX OPERATOR
-std::`<` (l: std::uuid, r: std::uuid) -> std::bool
+std::`<` (l: std::uuid, r: std::uuid) -> std::bool {
+    SET volatility := 'IMMUTABLE';
     FROM SQL OPERATOR '<';
+};
 
 
 ## String casts.
 
-CREATE CAST FROM std::str TO std::uuid
+CREATE CAST FROM std::str TO std::uuid {
+    SET volatility := 'IMMUTABLE';
     FROM SQL CAST;
+};
 
 
-CREATE CAST FROM std::uuid TO std::str
+CREATE CAST FROM std::uuid TO std::str {
+    SET volatility := 'IMMUTABLE';
     FROM SQL CAST;
+};

@@ -33,6 +33,7 @@
 CREATE FUNCTION
 std::to_str(dt: std::datetime, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -59,6 +60,7 @@ std::to_str(dt: std::datetime, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(td: std::duration, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -85,6 +87,7 @@ std::to_str(td: std::duration, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(dt: std::local_datetime, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -111,6 +114,7 @@ std::to_str(dt: std::local_datetime, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(d: std::local_date, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -143,6 +147,7 @@ std::to_str(d: std::local_date, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(nt: std::local_time, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -174,7 +179,8 @@ std::to_str(nt: std::local_time, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(i: std::int64, fmt: OPTIONAL str={}) -> std::str
 {
-    FROM SQL $$
+   SET volatility := 'STABLE';
+   FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
             "i"::text
@@ -200,6 +206,7 @@ std::to_str(i: std::int64, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(f: std::float64, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -226,6 +233,7 @@ std::to_str(f: std::float64, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(d: std::decimal, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -256,6 +264,7 @@ std::to_str(d: std::decimal, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(json: std::json, fmt: OPTIONAL str={}) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -284,6 +293,7 @@ std::to_str(json: std::json, fmt: OPTIONAL str={}) -> std::str
 CREATE FUNCTION
 std::to_str(array: array<std::str>, delimiter: std::str) -> std::str
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT array_to_string("array", "delimiter");
     $$;
@@ -293,6 +303,7 @@ std::to_str(array: array<std::str>, delimiter: std::str) -> std::str
 CREATE FUNCTION
 std::to_json(str: std::str) -> std::json
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT "str"::jsonb
     $$;
@@ -302,6 +313,7 @@ std::to_json(str: std::str) -> std::json
 CREATE FUNCTION
 std::to_datetime(s: std::str, fmt: OPTIONAL str={}) -> std::datetime
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -329,6 +341,7 @@ CREATE FUNCTION
 std::to_datetime(local: std::local_datetime, zone: std::str)
     -> std::datetime
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT timezone("zone", "local");
     $$;
@@ -341,6 +354,7 @@ std::to_datetime(year: std::int64, month: std::int64, day: std::int64,
                  timezone: std::str)
     -> std::datetime
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT make_timestamptz(
         "year"::int, "month"::int, "day"::int,
@@ -354,6 +368,7 @@ CREATE FUNCTION
 std::to_local_datetime(s: std::str, fmt: OPTIONAL str={})
     -> std::local_datetime
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -382,6 +397,7 @@ std::to_local_datetime(year: std::int64, month: std::int64, day: std::int64,
                        hour: std::int64, min: std::int64, sec: std::float64)
     -> std::local_datetime
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT make_timestamp(
         "year"::int, "month"::int, "day"::int,
@@ -395,6 +411,7 @@ CREATE FUNCTION
 std::to_local_datetime(dt: std::datetime, zone: std::str)
     -> std::local_datetime
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT timezone("zone", "dt");
     $$;
@@ -404,6 +421,7 @@ std::to_local_datetime(dt: std::datetime, zone: std::str)
 CREATE FUNCTION
 std::to_local_date(s: std::str, fmt: OPTIONAL str={}) -> std::local_date
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -431,6 +449,7 @@ CREATE FUNCTION
 std::to_local_date(dt: std::datetime, zone: std::str)
     -> std::local_date
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT timezone("zone", "dt")::date;
     $$;
@@ -441,6 +460,7 @@ CREATE FUNCTION
 std::to_local_date(year: std::int64, month: std::int64, day: std::int64)
     -> std::local_date
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT make_date("year"::int, "month"::int, "day"::int)
     $$;
@@ -450,6 +470,7 @@ std::to_local_date(year: std::int64, month: std::int64, day: std::int64)
 CREATE FUNCTION
 std::to_local_time(s: std::str, fmt: OPTIONAL str={}) -> std::local_time
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -477,6 +498,7 @@ CREATE FUNCTION
 std::to_local_time(dt: std::datetime, zone: std::str)
     -> std::local_time
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT timezone("zone", "dt")::time;
     $$;
@@ -487,6 +509,7 @@ CREATE FUNCTION
 std::to_local_time(hour: std::int64, min: std::int64, sec: std::float64)
     -> std::local_time
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT make_time("hour"::int, "min"::int, "sec")
     $$;
@@ -504,6 +527,7 @@ std::to_duration(
         NAMED ONLY seconds: std::float64=0
     ) -> std::duration
 {
+    SET volatility := 'IMMUTABLE';
     FROM SQL $$
     SELECT make_interval(
         "years"::int,
@@ -521,6 +545,7 @@ std::to_duration(
 CREATE FUNCTION
 std::to_decimal(s: std::str, fmt: OPTIONAL str={}) -> std::decimal
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -547,6 +572,7 @@ std::to_decimal(s: std::str, fmt: OPTIONAL str={}) -> std::decimal
 CREATE FUNCTION
 std::to_int64(s: std::str, fmt: OPTIONAL str={}) -> std::int64
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -573,6 +599,7 @@ std::to_int64(s: std::str, fmt: OPTIONAL str={}) -> std::int64
 CREATE FUNCTION
 std::to_int32(s: std::str, fmt: OPTIONAL str={}) -> std::int32
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -599,6 +626,7 @@ std::to_int32(s: std::str, fmt: OPTIONAL str={}) -> std::int32
 CREATE FUNCTION
 std::to_int16(s: std::str, fmt: OPTIONAL str={}) -> std::int16
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -625,6 +653,7 @@ std::to_int16(s: std::str, fmt: OPTIONAL str={}) -> std::int16
 CREATE FUNCTION
 std::to_float64(s: std::str, fmt: OPTIONAL str={}) -> std::float64
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN
@@ -651,6 +680,7 @@ std::to_float64(s: std::str, fmt: OPTIONAL str={}) -> std::float64
 CREATE FUNCTION
 std::to_float32(s: std::str, fmt: OPTIONAL str={}) -> std::float32
 {
+    SET volatility := 'STABLE';
     FROM SQL $$
     SELECT (
         CASE WHEN "fmt" IS NULL THEN

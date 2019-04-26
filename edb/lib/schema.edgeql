@@ -35,6 +35,10 @@ CREATE SCALAR TYPE schema::operator_kind_t EXTENDING std::str {
     CREATE CONSTRAINT std::one_of ('INFIX', 'POSTFIX', 'PREFIX', 'TERNARY');
 };
 
+CREATE SCALAR TYPE schema::volatility_t EXTeNDING std::str {
+    CREATE CONSTRAINT std::one_of ('IMMUTABLE', 'STABLE', 'VOLATILE');
+};
+
 # Base type for all schema entities.
 CREATE ABSTRACT TYPE schema::Object {
     CREATE REQUIRED PROPERTY name -> std::str;
@@ -123,13 +127,19 @@ CREATE TYPE schema::Parameter {
 CREATE ABSTRACT TYPE schema::CallableObject
     EXTENDING schema::AnnotationSubject
 {
-
     CREATE MULTI LINK params -> schema::Parameter {
         CREATE CONSTRAINT std::exclusive;
     };
 
     CREATE LINK return_type -> schema::Type;
     CREATE PROPERTY return_typemod -> std::str;
+};
+
+
+CREATE ABSTRACT TYPE schema::VolatilitySubject {
+    CREATE REQUIRED PROPERTY volatility -> schema::volatility_t {
+        SET default := 'VOLATILE';
+    };
 };
 
 
@@ -244,14 +254,18 @@ ALTER TYPE schema::ObjectType {
 };
 
 
-CREATE TYPE schema::Function EXTENDING schema::CallableObject {
+CREATE TYPE schema::Function
+    EXTENDING schema::CallableObject, schema::VolatilitySubject
+{
     CREATE REQUIRED PROPERTY session_only -> std::bool {
         SET default := false;
-    }
+    };
 };
 
 
-CREATE TYPE schema::Operator EXTENDING schema::CallableObject {
+CREATE TYPE schema::Operator
+    EXTENDING schema::CallableObject, schema::VolatilitySubject
+{
     CREATE PROPERTY operator_kind -> schema::operator_kind_t;
     CREATE LINK commutator -> schema::Operator;
     CREATE PROPERTY is_abstract -> std::bool {
@@ -260,7 +274,17 @@ CREATE TYPE schema::Operator EXTENDING schema::CallableObject {
 };
 
 
-CREATE TYPE schema::Cast EXTENDING schema::Object {
+ALTER TYPE schema::Operator {
+    ALTER PROPERTY volatility {
+        # in general we expect operators to be immutable
+        SET default := 'IMMUTABLE';
+    };
+};
+
+
+CREATE TYPE schema::Cast
+    EXTENDING schema::AnnotationSubject, schema::VolatilitySubject
+{
     CREATE LINK from_type -> schema::Type;
     CREATE LINK to_type -> schema::Type;
     CREATE PROPERTY allow_implicit -> std::bool;
